@@ -6,14 +6,15 @@
  */
 
 (function() {
-	delegate('#container', 'click', '.article',(event) => {
-  renderPop()
-})
+
+
   
 
 
 	var container = document.querySelector('#container')
 	var header = document.querySelector('header')
+	var popUpContainer = document.querySelector('#temp')
+	
 
 	var state = {
 		newsSource:["The Guardian","Reddit","Mashable","Chuck"],
@@ -23,6 +24,7 @@
 		guardURL : "http://content.guardianapis.com/search?api-key=2b9272f0-a832-4fe2-9fca-c004a4fa70a3",
 	  loading :"<div id='pop-up' class='loader'></div>",
 	 	articles:[],
+	 	popReset:"",
 	 	articleReset:function(){
 	 		state.articles.forEach((el)=>{
 	 			el = ""
@@ -37,12 +39,15 @@
 	    return response.json()
 	  }).then((callback)=>{
 	  		state.articleReset()
-	      callback.value.forEach((joke)=>{
+	      callback.value.forEach((joke,index)=>{
+	      	id = index
 	  	  	state.articles.push({
 	  	  		content:joke.joke,
 	  	  		image:"images/chuck.jpg",
 	  	  		social:0,
-	  	  		title:"Chuck Jokes"})
+	  	  		title:"Chuck Jokes",
+	  	  		id:id
+	  	  	})
 	  		})
 	  		renderNews(state,container)
 	  	}).catch((error)=>{
@@ -55,13 +60,15 @@
 	    return response.json()
 	  }).then((callback)=>{
 	  		state.articleReset()
-	  		callback.new.forEach((mash)=>{
+	  		callback.new.forEach((mash,index)=>{
+	  			id = index
 	  			state.articles.push({
 	  				content:mash.excerpt,
 	  				image:mash.image,
 	  				link:mash.link,
 	  				title:mash.display_title,
-	  				social:mash.shares.total
+	  				social:mash.shares.total,
+	  				id:id
 	  			})
 	  			renderNews(state,container)
 	  		})
@@ -76,13 +83,15 @@
 	    return response.json()
 		}).then((callback)=>{
 	      state.articleReset()
-	      callback.data.children.forEach((red)=>{
+	      callback.data.children.forEach((red,index)=>{
+	      	id = index
 	      	state.articles.push({
 	      		content:red.data.post_hint,
 	  				image:red.data.thumbnail,
 	  				link:red.data.permalink,
 	  				title:red.data.title,
-	  				social:red.data.score
+	  				social:red.data.score,
+	  				id:id
 
 	      	})
 	      	renderNews(state,container)
@@ -97,14 +106,17 @@
 	  	fetch(state.guardURL).then((response)=>{
 	    return response.json()
 		}).then((callback)=>{
-	  		articleReset()
-	  		callback.response.results.forEach((guard)=>{
+	  		state.articleReset()
+	  		callback.response.results.forEach((guard,index)=>{
+	  			id = index
 	  			state.articles.push({
 	  				content:guard.type,
 	  				image:"images/guardian.jpg",
 	  				link:guard.webUrl,
 	  				title:guard.webTitle,
-	  				social:0
+	  				social:0,
+	  				id:id
+
 	  			})
 	  			renderNews(state,container)
 	  		})
@@ -115,9 +127,16 @@
 
 	renderHeader(state, header)
 	// The functions below will call the api fetch and populate the state.articles array
-	//   // getGuard()
-	//   // getRed()
-	getMash()
+		delegate('header', 'click', 'li',(event) => {
+		var linkClicked = event.delegateTarget.id
+		if(linkClicked == "mash"){getMash()}
+		if(linkClicked == "red"){getRed()}
+		if(linkClicked == "guard"){getGuard()}
+
+	})
+	  // getGuard()
+// getRed()
+	// getMash()
 	//   // getChuck()
 
 
@@ -142,13 +161,14 @@
 			    </ul>
 		    </nav>
 		    <div class="clearfix"></div>
+		    
 	    </section>
 	  `
 	}
 	 
 	function renderArticle(article) {
 		return `
-			<article class="article">
+			<article data-id="${article.id}" class="article">
 				<section class="featured-image">
 		    	<img src="${article.image}" alt="" />
 		    </section>
@@ -158,6 +178,7 @@
 		     </section>
 		     <section class="impressions">${article.social}</section>
 		     <div class="clearfix"></div>
+		     <div id="temp"></div>
 	   </article>
 		`
 	}
@@ -188,16 +209,16 @@
 	 console.log(err)
 	}
 
-	function renderPop(article){
-		return `
+	function renderPop(article,into){
+		into.innerHTML = `
 			<div id="pop-up">
       <a href="#" class="close-pop-up">X</a>
       	<div class="wrapper">
-        	<h1>Temp</h1>
+        	<h1>${article.title}</h1>
         	<p>
-        		Temp
+        		${article.content}
         	</p>
-        	<a href="Temp" class="pop-up-action" target="_blank">Read more from source</a>
+        	<a href="${article.link}" class="pop-up-action" target="_blank">Read more from source</a>
       	</div>
     	</div>
     `
@@ -205,9 +226,23 @@
 	}
 
 
-delegate('#container', 'click', '.article',(event) => {
-	console.log(event.delegateTarget)
+
+
+	delegate('#container', 'click', '.article',(event) => {
+	var popId = event.delegateTarget.getAttribute("data-id")
+	var closePop = event.delegateTarget.querySelector(".close-pop-up")
+	state.articles.forEach((article)=>{
+		var popUp = document.querySelector('#temp')
+		if (article.id == popId){
+			renderPop(article,popUp)
+		}
+		if(closePop){
+			popUp.innerHTML = ""
+		}
+	})
+
 })
+
 
 })()
 
