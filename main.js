@@ -6,7 +6,9 @@
  */
 
 (function() {
-
+	delegate('#container', 'click', '.article',(event) => {
+  renderPop()
+})
   
 
 
@@ -66,6 +68,7 @@
 	  	}).catch((error)=>{
 	  		renderError(error,container)
 			})
+
 	  }
 
 	function getRed(){
@@ -87,6 +90,7 @@
 	  	}).catch((error)=>{
 	  		renderError(error,container)
 			})
+
 	  }
 
 	function getGuard(){
@@ -184,23 +188,25 @@
 	 console.log(err)
 	}
 
-	function renderPop(data,into){
-		into.innerHTML = `
+	function renderPop(article){
+		return `
 			<div id="pop-up">
       <a href="#" class="close-pop-up">X</a>
-      <div class="wrapper">
-        <h1>${article.title}</h1>
-        <p>
-        ${article.content}
-        </p>
-        <a href="${article.link}" class="pop-up-action" target="_blank">Read more from source</a>
-      </div>
-    </div>
-		`
+      	<div class="wrapper">
+        	<h1>Temp</h1>
+        	<p>
+        		Temp
+        	</p>
+        	<a href="Temp" class="pop-up-action" target="_blank">Read more from source</a>
+      	</div>
+    	</div>
+    `
+
 	}
 
-	delegate('#container', 'click', '.article',(event) => {
-  console.log(event.delegateTargt)
+
+delegate('#container', 'click', '.article',(event) => {
+	console.log(event.delegateTarget)
 })
 
 })()
