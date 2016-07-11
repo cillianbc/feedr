@@ -8,13 +8,13 @@
 (function() {
 
 
-  
+
 
 
 	var container = document.querySelector('#container')
 	var header = document.querySelector('header')
 	var popUpContainer = document.querySelector('#temp')
-	
+
 
 	var state = {
 		newsSource:["The Guardian","Reddit","Mashable","Chuck"],
@@ -26,15 +26,14 @@
 	 	articles:[],
 	 	popReset:"",
 	 	articleReset:function(){
-	 		state.articles.forEach((el)=>{
-	 			el = ""
-	 		})
-	 	}
+	 		state.articles =[]
+	 		}
 	}
-		
-	 
+
+
 
 	function getChuck(){
+      renderLoading(state,container)
 	  	fetch(state.chuckURL).then((response)=>{
 	    return response.json()
 	  }).then((callback)=>{
@@ -56,6 +55,7 @@
 	  }
 
 	function getMash(){
+      renderLoading(state,container)
 	  	fetch(state.mashableURL).then((response)=>{
 	    return response.json()
 	  }).then((callback)=>{
@@ -79,6 +79,7 @@
 	  }
 
 	function getRed(){
+      renderLoading(state,container)
 	  	fetch(state.redditURL).then((response)=>{
 	    return response.json()
 		}).then((callback)=>{
@@ -103,6 +104,7 @@
 	  }
 
 	function getGuard(){
+      renderLoading(state,container)
 	  	fetch(state.guardURL).then((response)=>{
 	    return response.json()
 		}).then((callback)=>{
@@ -129,12 +131,14 @@
 	// The functions below will call the api fetch and populate the state.articles array
 		delegate('header', 'click', 'li',(event) => {
 		var linkClicked = event.delegateTarget.id
+    console.log(linkClicked)
 		if(linkClicked == "mash"){getMash()}
-		if(linkClicked == "red"){getRed()}
-		if(linkClicked == "guard"){getGuard()}
+		else if(linkClicked == "red"){getRed()}
+		else if(linkClicked == "guard"){getGuard()}
 
 	})
-	  // getGuard()
+
+	  getGuard()
 // getRed()
 	// getMash()
 	//   // getChuck()
@@ -161,11 +165,11 @@
 			    </ul>
 		    </nav>
 		    <div class="clearfix"></div>
-		    
+
 	    </section>
 	  `
 	}
-	 
+
 	function renderArticle(article) {
 		return `
 			<article data-id="${article.id}" class="article">
@@ -245,6 +249,3 @@
 
 
 })()
-
-
-
