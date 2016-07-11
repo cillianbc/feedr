@@ -213,6 +213,8 @@
 	 console.log(err)
 	}
 
+// TO-DO add image to pop up
+
 	function renderPop(article,into){
 		into.innerHTML = `
 			<div id="pop-up">
