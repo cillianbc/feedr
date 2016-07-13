@@ -35,6 +35,7 @@ body {
   border: 1px solid gray;
   overflow-y: auto;
   background-color: #fff;
+  border-radius: 15px;
 }
 
 #pop-up.loader {
@@ -245,4 +246,8 @@ nav ul ul li {
   margin-top: 15px;
   text-align: right;
   color: #097FB2;
+}
+
+.pop-source{
+  padding-top: 2rem;
 }

@@ -89,7 +89,7 @@
 	      	state.articles.push({
 	      		content:red.data.post_hint,
 	  				image:red.data.thumbnail,
-	  				link:red.data.permalink,
+	  				link:red.data.url,
 	  				title:red.data.title,
 	  				social:red.data.score,
 	  				id:id
@@ -225,6 +225,7 @@
         		${article.content}
         	</p>
         	<a href="${article.link}" class="pop-up-action" target="_blank">Read more from source</a>
+					<img class="pop-source" src="${article.image}" alt="" />
       	</div>
     	</div>
     `
